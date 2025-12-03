@@ -15,7 +15,7 @@ fi
 
 # Run QEMU
 echo "Starting QEMU..."
-qemu-system-riscv64 -machine virt -cpu rv64 -m 128M \
+qemu-system-riscv64 -machine virt -cpu rv64 -m 1024M \
     -nographic -bios default -kernel kernel.bin \
     -drive file=disk.img,format=raw,id=hd0 \
     -device virtio-blk-device,drive=hd0
