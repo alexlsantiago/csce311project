@@ -18,7 +18,6 @@ ASFLAGS = -march=rv64imafdc -mabi=lp64d
 LDFLAGS = -T linker.ld -nostdlib -static
 
 KERNEL_SRCS = kernel/main.c \
-              kernel/init.c \
               kernel/console.c \
               kernel/memory.c \
               kernel/paging.c \
@@ -31,6 +30,7 @@ KERNEL_SRCS = kernel/main.c \
               kernel/shell.c \
               kernel/string.c \
               kernel/printf.c \
+              kernel/timer.c \
               drivers/uart.c \
               drivers/virtio.c
 
@@ -70,4 +70,3 @@ qemu: run
 
 disk:
 	dd if=/dev/zero of=disk.img bs=1M count=10
-

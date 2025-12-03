@@ -1,47 +1,43 @@
-#include "kernel.h"
+// kernel/main.c
 #include "uart.h"
 #include "memory.h"
 #include "task.h"
 #include "scheduler.h"
 #include "fs.h"
 #include "shell.h"
+#include "timer.h"
 
 extern char _bss_start[];
 extern char _bss_end[];
-extern char _stack_top[];
 
-void kernel_init(void) {
-    /* Initialize UART for output */
-    uart_init();
+void kernel_main(void) {
+    // Zero BSS section
+    for (char *p = _bss_start; p < _bss_end; p++) {
+        *p = 0;
+    }
+
     uart_puts("\r\n=== RISC-V OS Boot ===\r\n");
-    
-    /* Initialize memory management */
+
     uart_puts("Initializing memory...\r\n");
     memory_init();
-    
-    /* Initialize file system */
+
+    uart_puts("Initializing timer...\r\n");
+    timer_init();
+
     uart_puts("Initializing file system...\r\n");
     fs_init();
-    
-    /* Initialize task system */
+
     uart_puts("Initializing task system...\r\n");
     scheduler_init();
     task_init();
-    
-    /* Start shell */
-    uart_puts("Starting shell...\r\n\r\n");
-    shell_start();
-    
-    /* Should never reach here */
-    panic("Kernel init returned");
-}
 
-void panic(const char *msg) {
-    uart_puts("\r\nKERNEL PANIC: ");
-    uart_puts(msg);
-    uart_puts("\r\n");
-    while(1) {
-        asm volatile("wfi");
+    uart_puts("Starting shell...\r\n\r\n");
+
+    // Jump into the shell; this never returns in normal use.
+    shell_start();
+
+    // If shell ever returns, just idle.
+    while (1) {
+        asm volatile ("wfi");
     }
 }
-

@@ -1,2 +1,1 @@
-/* Kernel initialization helpers */
-
+/* init.c intentionally empty */

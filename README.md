@@ -1,7 +1,26 @@
 # RISC-V Operating System
 
-A working command-line operating system for RISC-V architecture, built from scratch. This OS includes multitasking, synchronization primitives, a file system, program loading, and a shell interface.
+A working command-line OS built from scratch for RISC-V architecture using QEMU.
 
+This project implements a minimal but functional 64-bit RISC-V operating system, including:
+
+Bare-metal UART driver
+
+Custom printf
+
+Memory manager
+
+Simple task scheduler
+
+Task forking
+
+File system support
+
+Timer ticks + uptime
+
+An interactive shell
+
+Boot flow integrated with OpenSBI
 ## Quick Start
 
 ```bash
@@ -12,10 +31,31 @@ brew install riscv-gnu-toolchain qemu
 make
 make run
 ```
+=== RISC-V OS Boot ===
+Initializing memory...
+Initializing timer...
+Initializing file system...
+Initializing task system...
+Starting shell...
+
+RISC-V OS Shell v1.0
+Type 'help' for commands
+>
 
 The OS will boot and you'll see an interactive shell. Type `help` to see available commands.
 
 ## Features
+Bootloader / Kernel Entry
+-BSS clearing
+-Stack initialization
+-Jump into kernel_main()
+UART Driver
+PRINTF
+Timer + Uptime
+Memory Manager
+Simple Task Scheduler
+File System
+Interactive Shell
 
 ### Core Features
 - **Bootloader**: RISC-V entry point with BSS clearing and stack setup
@@ -58,42 +98,36 @@ The OS will boot and you'll see an interactive shell. Type `help` to see availab
 ```
 csce311project/
 ├── boot/
-│   └── entry.S          # Bootloader entry point
+│   ├── entry.S          # Boot entry + jump to kernel_main
+│   └── trap.S           # Trap stub (not fully used yet)
+│
 ├── kernel/
 │   ├── main.c           # Kernel initialization
-│   ├── init.c           # Initialization helpers
-│   ├── console.c        # Console interface
-│   ├── memory.c         # Memory management
-│   ├── paging.c         # Page table management
-│   ├── task.c           # Task/process management
-│   ├── scheduler.c      # Task scheduler
-│   ├── sync.c           # Synchronization primitives
-│   ├── syscall.c        # System call handler
-│   ├── fs.c             # File system implementation
-│   ├── elf.c            # ELF loader
-│   ├── shell.c          # Shell implementation
-│   ├── string.c         # String utilities
-│   └── printf.c         # Printf implementation
+│   ├── console.c        # Console / screen helpers
+│   ├── memory.c         # Memory allocator + counters
+│   ├── paging.c         # Page table setup
+│   ├── timer.c          # 64-bit tick counter
+│   ├── trap.c           # Trap handler (basic)
+│   ├── task.c           # Task creation + fork
+│   ├── scheduler.c      # Ready queue + task list
+│   ├── fs.c             # Simple embedded file system
+│   ├── elf.c            # (Stub) ELF loader
+│   ├── shell.c          # Interactive shell
+│   ├── printf.c         # Custom printf
+│   └── string.c         # Basic libc-like utilities
+│
 ├── drivers/
 │   ├── uart.c           # UART driver
-│   └── virtio.c         # VirtIO block device driver
+│   └── virtio.c         # VirtIO block device
+│
 ├── include/
-│   ├── types.h          # Type definitions
-│   ├── kernel.h         # Kernel constants and declarations
-│   ├── memory.h         # Memory management API
-│   ├── task.h           # Task management API
-│   ├── scheduler.h      # Scheduler API
-│   ├── sync.h           # Synchronization API
-│   ├── fs.h             # File system API
-│   ├── elf.h            # ELF structures
-│   ├── uart.h           # UART API
-│   ├── paging.h         # Paging API
-│   ├── shell.h          # Shell API
-│   └── string.h         # String API
+│   ├── *.h              # All kernel headers
+│
+├── disk.img             # File system disk image
+├── linker.ld            # Kernel memory layout
 ├── Makefile             # Build system
-├── linker.ld            # Linker script
-└── README.md            # This file
-```
+└── run.sh               # QEMU launcher
+
 
 ## Building
 
@@ -119,7 +153,8 @@ You also need QEMU with RISC-V support:
 sudo apt-get install qemu-system-riscv64
 
 # On macOS
-brew install qemu
+brew install riscv-gnu-toolchain qemu
+
 ```
 
 ### Build Commands
@@ -174,7 +209,9 @@ $
 - `ls` - List files in the file system
 - `cat <file>` - Display file contents
 - `echo <text>` - Echo text to console
+- `uptime` - Show timer ticks
 - `ps` - List running processes
+- `meminfo` - Show memory usage
 - `fork` - Fork the current process
 - `exit` - Exit the shell
 

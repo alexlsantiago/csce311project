@@ -16,7 +16,7 @@ clear_bss:
 done_clear:
     
     # Jump to C kernel
-    call kernel_init
+    call kernel_main
     
     # Should never return, but if it does, loop
 loop:
