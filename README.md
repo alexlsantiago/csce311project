@@ -287,3 +287,59 @@ This project is for educational purposes.
 - [RISC-V Instruction Set Manual](https://riscv.org/technical/specifications/)
 - [QEMU RISC-V Documentation](https://www.qemu.org/docs/master/system/riscv/virt.html)
 - [ELF Format Specification](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)
+
+## Chat Logs With AI
+
+Q&A Highlights from Project Development
+
+Team Member: How do we start a minimal RISC-V OS?
+AI: Begin with a bootloader (entry.S) to set up the stack and clear BSS. Then jump to a kernel_main() in kernel/main.c. Use UART to print a simple message to confirm the kernel boots.
+
+Team Member: How do we add a shell?
+AI: Create kernel/shell.c and include/shell.h. Implement a loop that reads input from UART and handles basic commands like help and echo. Integrate the shell in kernel_main() after kernel initialization.
+
+Team Member: We need memory management. How do we do that?
+AI: Add kernel/memory.c and include/memory.h. Implement kmalloc and kfree for heap allocation. Also include kernel/string.c and kernel/printf.c for basic utilities. These will be used by the shell and kernel.
+
+Team Member: How can we support multiple tasks?
+AI: Implement kernel/task.c and include/task.h. Define task structures, states (RUNNING, READY, BLOCKED), and task creation functions. Add kernel/scheduler.c for a round-robin scheduler. Use task_yield() to switch tasks cooperatively.
+
+Team Member: Can we run separate programs?
+AI: Yes. Add kernel/elf.c and include/elf.h to load ELF executables. Combine with kernel/fs.c/include/fs.h for a simple in-memory file system. Add a shell command like exec <program> and a system call SYS_EXEC for running new programs.
+
+Team Member: How do we safely share resources between tasks?
+AI: Implement kernel/sync.c and include/sync.h. Add mutexes, semaphores, and spinlocks. Use task_wait() for tasks that block while waiting on a resource. This prevents race conditions.
+
+Team Member: Can we track uptime or implement timers?
+AI: Add kernel/timer.c and include/timer.h. Maintain a 64-bit tick counter. Add a shell command uptime to display the counter. This can be used for scheduling or performance metrics.
+
+Team Member: What’s next after multitasking and ELF loading?
+AI: You could add:
+File system persistence
+Paging with Sv39 for memory protection
+Interrupt handling
+More shell commands (ps, meminfo, etc.)
+Device drivers beyond UART
+
+Team Member: How can we implement basic synchronization for multiple programs accessing files?
+AI: Use sync.c mutexes or semaphores to guard file system operations. Wrap file read/write calls with lock/unlock.
+
+Team Member: What about running multiple programs simultaneously?
+AI: Use the task scheduler. Each program gets its own task_t structure and stack. ELF loader can load multiple programs into memory. Scheduler switches between them round-robin.
+
+Team Member: Can we implement simple protection for each process?
+AI: Yes. Use separate page tables (satp) per task. Add identity mapping for kernel, separate mappings for user programs. Later, you can extend to Sv39 paging.
+
+Team Member: What’s the first feature to add after a basic shell?
+AI: A simple timer and uptime command, then multitasking with a basic round-robin scheduler. Next, ELF loading and the file system.
+
+Team Member: How do we add a command to list running processes?
+AI: Implement a ps shell command. Iterate over the task list in scheduler.c and print PID, state, and task name.
+
+Team Member: Can we add memory usage reporting?
+AI: Add a meminfo shell command. Use kernel/memory.c to report total heap size, used memory, and free memory.
+
+Team Member: How do we handle file creation and reading in the shell?
+AI: Use fs.c and fs.h. Add shell commands like touch <file> and cat <file> to create and read files. Connect to system calls SYS_READ_FS and SYS_WRITE_FS.
+
+Some chat logs were lost due to technical issues.
