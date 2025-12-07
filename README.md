@@ -30,6 +30,11 @@ brew install riscv-gnu-toolchain qemu
 # Build and run
 make
 make run
+
+# IMPORTANT:
+# Some environments have issues with `make run`
+# If that happens, use the working launcher:
+./run.sh
 ```
 === RISC-V OS Boot ===
 Initializing memory...
