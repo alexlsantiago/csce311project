@@ -388,8 +388,7 @@ void shell_start() {
 
         else if (strcmp(cmd, "exit") == 0) {
             printf("Exiting shell...\r\n");
-            os_exit();
-            
+            return;            
         }
 
         else
