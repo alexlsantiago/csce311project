@@ -6,6 +6,8 @@
 #include "string.h"
 #include "types.h"
 #include "scheduler.h"
+#include "elf.h"
+
 
 static task_t tasks[MAX_TASKS];
 static int next_pid = 1;

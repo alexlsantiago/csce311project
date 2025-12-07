@@ -13,6 +13,6 @@ void timer_tick(void) {
 uint64_t timer_get_ticks(void) {
     uint64_t t;
     // On RV64, time is a 64-bit CSR; a single read is enough.
-    asm volatile("csrr %0, time" : "=r"(t));
+    __asm__ volatile("csrr %0, time" : "=r"(t));
     return t;
 }

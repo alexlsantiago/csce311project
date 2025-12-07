@@ -9,7 +9,7 @@ void spinlock_init(spinlock_t* lock) {
 void spinlock_lock(spinlock_t* lock) {
     while (__sync_lock_test_and_set(&lock->locked, 1)) {
         /* RISC-V does NOT have 'pause' – use nop */
-        asm volatile("nop");
+        __asm__ volatile("nop");
     }
 }
 
@@ -28,7 +28,7 @@ void semaphore_wait(semaphore_t* sem) {
     while (sem->count <= 0) {
         spinlock_unlock(&sem->lock);
         /* Yield and try again */
-        asm volatile("nop");
+        __asm__ volatile("nop");
         spinlock_lock(&sem->lock);
     }
     sem->count--;
@@ -52,7 +52,7 @@ void mutex_init(mutex_t* mutex) {
 void mutex_lock(mutex_t* mutex) {
     /* Simple spinlock-based mutex for now */
     while (__sync_lock_test_and_set(&mutex->locked, 1)) {
-        asm volatile("nop");
+        __asm__ volatile("nop");
     }
     mutex->count++;
 }

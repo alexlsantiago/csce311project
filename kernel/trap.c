@@ -8,20 +8,20 @@
 
 /* Set mtvec to our trap vector */
 static inline void write_csr_mtvec(uint64_t x) {
-    asm volatile("csrw mtvec, %0" :: "r"(x));
+    __asm__ volatile("csrw mtvec, %0" :: "r"(x));
 }
 
 /* Read scause CSR */
 static inline uint64_t read_csr_scause() {
     uint64_t x;
-    asm volatile("csrr %0, scause" : "=r"(x));
+    __asm__ volatile("csrr %0, scause" : "=r"(x));
     return x;
 }
 
 /* Read sepc CSR */
 static inline uint64_t read_csr_sepc() {
     uint64_t x;
-    asm volatile("csrr %0, sepc" : "=r"(x));
+    __asm__ volatile("csrr %0, sepc" : "=r"(x));
     return x;
 }
 

@@ -10,12 +10,38 @@
 extern char _bss_start[];
 extern char _bss_end[];
 
-void kernel_main(void) {
-    // Zero BSS section
-    for (char *p = _bss_start; p < _bss_end; p++) {
-        *p = 0;
-    }
+// void kernel_main(void) {
+//     // Zero BSS section
+//     for (char *p = _bss_start; p < _bss_end; p++) {
+//         *p = 0;
+//     }
 
+//     uart_puts("\r\n=== RISC-V OS Boot ===\r\n");
+
+//     uart_puts("Initializing memory...\r\n");
+//     memory_init();
+
+//     uart_puts("Initializing timer...\r\n");
+//     timer_init();
+
+//     uart_puts("Initializing file system...\r\n");
+//     fs_init();
+
+//     uart_puts("Initializing task system...\r\n");
+//     scheduler_init();
+//     task_init();
+
+//     uart_puts("Starting shell...\r\n\r\n");
+
+//     // Jump into the shell; this never returns in normal use.
+//     shell_start();
+
+//     // If shell ever returns, just idle.
+//     while (1) {
+//         __asm__ volatile ("wfi");
+//     }
+// }
+void kernel_main(void) {
     uart_puts("\r\n=== RISC-V OS Boot ===\r\n");
 
     uart_puts("Initializing memory...\r\n");
@@ -33,11 +59,9 @@ void kernel_main(void) {
 
     uart_puts("Starting shell...\r\n\r\n");
 
-    // Jump into the shell; this never returns in normal use.
     shell_start();
 
-    // If shell ever returns, just idle.
     while (1) {
-        asm volatile ("wfi");
+        __asm__ volatile ("wfi");
     }
 }

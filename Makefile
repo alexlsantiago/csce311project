@@ -8,7 +8,7 @@ LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy
 OBJDUMP = $(CROSS_COMPILE)objdump
 
-CFLAGS = -march=rv64imafdc -mabi=lp64d -mcmodel=medany \
+CFLAGS = -std=c17 -march=rv64imafdc -mabi=lp64d -mcmodel=medany \
          -Wall -Wextra -O2 -g -ffreestanding -nostdlib \
          -fno-common -fno-builtin -fno-stack-protector \
          -Iinclude -DKERNEL
@@ -63,8 +63,9 @@ clean:
 run: $(KERNEL_BIN) disk.img
 	qemu-system-riscv64 -machine virt -cpu rv64 -m 128M \
 		-nographic -bios default -kernel $(KERNEL_BIN) \
-		-drive file=disk.img,format=raw,id=hd0 \
+		-drive file=disk.img,format=raw,if=none,id=hd0 \
 		-device virtio-blk-device,drive=hd0
+
 
 qemu: run
 
