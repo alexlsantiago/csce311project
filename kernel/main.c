@@ -57,7 +57,16 @@ void kernel_main(void) {
     scheduler_init();
     task_init();
 
+   
+
     uart_puts("Starting shell...\r\n\r\n");
+     uart_puts("Starting shell task...\r\n");
+    task_t* shell_task = task_create("shell", shell_start);
+    if (!shell_task) {
+        uart_puts("Failed to create shell task!\r\n");
+        while(1) { __asm__ volatile ("wfi"); }
+    }
+    set_current_task(shell_task);
 
     shell_start();
 

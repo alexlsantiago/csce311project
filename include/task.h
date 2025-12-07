@@ -9,6 +9,8 @@
 #define TASK_NAME_LEN 32
 #endif
 
+
+
 typedef enum {
     TASK_RUNNING,
     TASK_READY,
@@ -29,6 +31,7 @@ typedef struct task {
     void* page_table;
     struct task* next;
     struct task* prev;
+    struct task* next_ready;
     mutex_t* wait_mutex;
     int exit_code;
 } task_t;
@@ -45,5 +48,7 @@ int task_wait(int pid);
 /* Initialization and internal helpers */
 void task_init(void);
 void set_current_task(task_t* task);
+task_t* get_task_list(void);  // Expose the internal list to scheduler.c
+
 
 #endif
